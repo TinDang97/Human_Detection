@@ -16,6 +16,7 @@ class ImageWriter:
         self.__folder_path = folder_path
         self.__thread = threading.Thread(target=self.parallel_write, args=())
         self.__queue_frame = Queue()
+        self.__latest_file = ""
         self.__started = False
         self.__stopped = False
 
@@ -23,6 +24,7 @@ class ImageWriter:
         try:
             while not self.__queue_frame.empty() or not self.__stopped:
                 filename = f"capture_{datetime.now().strftime('%Y%m%d%H%M%S')}.jpg"
+                self.__latest_file = filename
                 cv2.imwrite(f"{self.__folder_path}/{filename}", self.__queue_frame.get())
         except:
             pass
@@ -33,7 +35,11 @@ class ImageWriter:
             self.__started = True
 
         self.__queue_frame.put(frame)
-        return True
+
+        while not self.__latest_file:
+            time.sleep(0.1)
+
+        return self.__latest_file
 
     def release(self):
         self.__stopped = True

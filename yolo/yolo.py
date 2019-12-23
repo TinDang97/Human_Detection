@@ -18,7 +18,7 @@ class YOLO:
         self.net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
         self.net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
 
-        self.conf_threshold = 0.5
+        self.conf_threshold = 0.9
         self.nms_threshold = 0.4
 
     def detect_person(self, image):
@@ -52,5 +52,9 @@ class YOLO:
         if len(boxes) <= 0:
             return boxes, confidences
 
-        keep = cv2.dnn.NMSBoxes(boxes, confidences, self.conf_threshold, self.nms_threshold)[:, 0]
-        return numpy.array(boxes)[keep].tolist(), numpy.array(confidences)[keep].tolist()
+        keep = cv2.dnn.NMSBoxes(boxes, confidences, self.conf_threshold, self.nms_threshold)
+
+        if not list(keep):
+            return [], []
+
+        return numpy.array(boxes)[keep[:, 0]].tolist(), numpy.array(confidences)[keep[:, 0]].tolist()

@@ -7,7 +7,7 @@ def draw_prediction(img, label, box):
     return cv2.putText(img, label, (box[0] - 10, box[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
 
 
-def show_image(winname, image, wait=True, window_size=(800, 600)):
+def show_image(winname, image, wait=True, window_size=(1200, 900)):
     cv2.namedWindow(winname, cv2.WINDOW_NORMAL)
     cv2.imshow(winname, image)
     cv2.resizeWindow(winname, *window_size)
