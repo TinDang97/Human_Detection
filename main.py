@@ -22,6 +22,8 @@ args_parser.add_argument("--show_score", default=True, help="if True, show score
 args_parser.add_argument("--display", default=False, const=True, action="store_const", help="if True, display process")
 args_parser.add_argument("--output-folder", default="", help="folder output path")
 args_parser.add_argument("--min-size-object", default=400, help="folder output path")
+args_parser.add_argument("--host", default="localhost", help="folder output path")
+args_parser.add_argument("--port", default=4342, help="folder output path")
 args = args_parser.parse_args()
 
 print(args_parser.description)
@@ -65,9 +67,6 @@ def tracking(args, vid, detector, writer, msg, file_path, lock):
 
 app = Flask(__name__)
 
-host = "127.0.0.1"
-port = "4342"
-
 if __name__ == '__main__':
     source = args.source
     try:
@@ -100,7 +99,7 @@ if __name__ == '__main__':
                     time.sleep(0.5)
                     continue
 
-                http_link = f"http://{host}:{port}/capture/{file_path.value}"
+                http_link = f"http://{args.host}:{args.port}/capture/{file_path.value}"
                 yield f"{msg.value} <a href='{http_link}' target='_blank'>{http_link}</a><br>"
                 msg.value = ""
         return Response(yield_msg())
@@ -115,4 +114,4 @@ if __name__ == '__main__':
         vid.stop()
         return "DONE"
 
-    app.run(host, port=port)
+    app.run(args.host, port=args.port)
